@@ -9,7 +9,6 @@
       display: flex;
       flex-direction: column;
       font-family: Arial, sans-serif;
-      overflow: hidden; /* Prevent scrollbars from appearing */
     }
     #container {
       display: flex;
@@ -22,17 +21,11 @@
       background-color: #333;
       color: white;
       border: none;
-      padding: 0; /* Remove padding */
+      resize: none;
+      padding: 20px;
       box-sizing: border-box;
       font-size: 18px;
-      overflow-y: auto;
-      min-height: 100px;
-      outline: none;
-      white-space: pre-wrap; /* Preserve whitespace */
-      word-wrap: break-word; /* Break long words */
-      cursor: text; /* Make it look like a text area */
-      caret-color: white; /* Make the cursor visible */
-      margin: 0; /* Ensure it starts from the top */
+      overflow-y: auto; /* Allow scrolling if content exceeds the visible area */
     }
     #keypad {
       display: grid;
@@ -71,17 +64,16 @@
       100% { border-right: 2px solid white; }
     }
     #outputField:focus {
+      outline: none;
       border-right: 2px solid white;
       animation: blink 1s step-start infinite;
     }
   </style>
-  <!-- Prevent double-tap zooming on mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
 
 <div id="container">
-  <input id="outputField" readonly />
+  <textarea id="outputField"></textarea>
   <div id="keypad">
     <div class="key" onclick="addToText('e')">e</div>
     <div class="key" onclick="addToText('y')">y</div>
@@ -111,36 +103,33 @@
 
   function addToText(value) {
     const outputField = document.getElementById('outputField');
-    const currentText = outputField.value;
-    outputField.value = currentText + value;
-    outputField.focus(); // Keep focus on the input
+    outputField.value += value;
+    outputField.focus(); // Keep focus on textarea
     lastKeyWasSpace = false; // Reset space flag
   }
 
   function handleBackspace() {
     const outputField = document.getElementById('outputField');
-    const currentText = outputField.value;
-    outputField.value = currentText.slice(0, -1); // Remove the last character
-    outputField.focus(); // Keep focus on the input
+    outputField.value = outputField.value.slice(0, -1); // Remove the last character
+    outputField.focus(); // Keep focus on textarea
     lastKeyWasSpace = false; // Reset space flag
   }
 
   function handleSpace() {
     const outputField = document.getElementById('outputField');
-    const currentText = outputField.value;
     if (lastKeyWasSpace) {
-      outputField.value = currentText + '\n'; // Add a new line if space was already added
+      outputField.value += '\n'; // Add newline if space was already added
       lastKeyWasSpace = false; // Reset space flag
     } else {
-      outputField.value = currentText + ' '; // Add a single space
+      outputField.value += ' '; // Add single space
       lastKeyWasSpace = true; // Set space flag
     }
-    outputField.focus(); // Keep focus on the input
+    outputField.focus(); // Keep focus on textarea
   }
 
   function downloadText() {
     const outputField = document.getElementById('outputField');
-    const text = outputField.value; // Use value to get plain text
+    const text = outputField.value;
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
