@@ -9,6 +9,7 @@
       display: flex;
       flex-direction: column;
       font-family: Arial, sans-serif;
+      overflow: hidden; /* Prevent scrollbars from appearing */
     }
     #container {
       display: flex;
@@ -21,7 +22,7 @@
       background-color: #333;
       color: white;
       border: none;
-      padding: 20px;
+      padding: 0; /* Remove padding */
       box-sizing: border-box;
       font-size: 18px;
       overflow-y: auto;
@@ -31,6 +32,7 @@
       word-wrap: break-word; /* Break long words */
       cursor: text; /* Make it look like a text area */
       caret-color: white; /* Make the cursor visible */
+      margin: 0; /* Ensure it starts from the top */
     }
     #keypad {
       display: grid;
@@ -73,6 +75,8 @@
       animation: blink 1s step-start infinite;
     }
   </style>
+  <!-- Prevent double-tap zooming on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
 
