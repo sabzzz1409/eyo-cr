@@ -27,6 +27,8 @@
       overflow-y: auto;
       min-height: 100px;
       outline: none;
+      white-space: pre-wrap; /* Preserve whitespace */
+      word-wrap: break-word; /* Break long words */
     }
     #keypad {
       display: grid;
@@ -58,6 +60,7 @@
       font-size: 16px;
       cursor: pointer;
     }
+    /* Blinking cursor */
     @keyframes blink {
       0% { border-right: 2px solid white; }
       50% { border-right: 2px solid transparent; }
@@ -109,7 +112,8 @@
 
   function handleBackspace() {
     const outputField = document.getElementById('outputField');
-    outputField.innerHTML = outputField.innerHTML.slice(0, -1); // Remove the last character
+    const currentContent = outputField.innerHTML;
+    outputField.innerHTML = currentContent.slice(0, -1); // Remove the last character
     outputField.focus(); // Keep focus on the div
     lastKeyWasSpace = false; // Reset space flag
   }
@@ -137,6 +141,11 @@
     a.click();
     URL.revokeObjectURL(url);
   }
+
+  // Prevent the built-in keyboard from appearing
+  document.getElementById('outputField').addEventListener('focus', function(event) {
+    event.target.blur(); // Prevent the keyboard from appearing
+  });
 </script>
 
 </body>
