@@ -29,6 +29,8 @@
       outline: none;
       white-space: pre-wrap; /* Preserve whitespace */
       word-wrap: break-word; /* Break long words */
+      cursor: text; /* Make it look like a text area */
+      caret-color: white; /* Make the cursor visible */
     }
     #keypad {
       display: grid;
@@ -75,7 +77,7 @@
 <body>
 
 <div id="container">
-  <div id="outputField" contenteditable="true"></div>
+  <input id="outputField" readonly />
   <div id="keypad">
     <div class="key" onclick="addToText('e')">e</div>
     <div class="key" onclick="addToText('y')">y</div>
@@ -105,34 +107,36 @@
 
   function addToText(value) {
     const outputField = document.getElementById('outputField');
-    outputField.innerHTML += value;
-    outputField.focus(); // Keep focus on the div
+    const currentText = outputField.value;
+    outputField.value = currentText + value;
+    outputField.focus(); // Keep focus on the input
     lastKeyWasSpace = false; // Reset space flag
   }
 
   function handleBackspace() {
     const outputField = document.getElementById('outputField');
-    const currentContent = outputField.innerHTML;
-    outputField.innerHTML = currentContent.slice(0, -1); // Remove the last character
-    outputField.focus(); // Keep focus on the div
+    const currentText = outputField.value;
+    outputField.value = currentText.slice(0, -1); // Remove the last character
+    outputField.focus(); // Keep focus on the input
     lastKeyWasSpace = false; // Reset space flag
   }
 
   function handleSpace() {
     const outputField = document.getElementById('outputField');
+    const currentText = outputField.value;
     if (lastKeyWasSpace) {
-      outputField.innerHTML += '<br>'; // Add a new line if space was already added
+      outputField.value = currentText + '\n'; // Add a new line if space was already added
       lastKeyWasSpace = false; // Reset space flag
     } else {
-      outputField.innerHTML += ' '; // Add a single space
+      outputField.value = currentText + ' '; // Add a single space
       lastKeyWasSpace = true; // Set space flag
     }
-    outputField.focus(); // Keep focus on the div
+    outputField.focus(); // Keep focus on the input
   }
 
   function downloadText() {
     const outputField = document.getElementById('outputField');
-    const text = outputField.innerText; // Use innerText to get plain text
+    const text = outputField.value; // Use value to get plain text
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -141,11 +145,6 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-
-  // Prevent the built-in keyboard from appearing
-  document.getElementById('outputField').addEventListener('focus', function(event) {
-    event.target.blur(); // Prevent the keyboard from appearing
-  });
 </script>
 
 </body>
