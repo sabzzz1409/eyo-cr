@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>4x4 Keypad</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+    #container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    #outputField {
+      flex: 1;
+      width: 100%;
+      background-color: #333;
+      color: white;
+      border: none;
+      resize: none;
+      padding: 20px;
+      box-sizing: border-box;
+      font-size: 18px;
+      overflow-y: auto; /* Allow scrolling if content exceeds the visible area */
+    }
+    #keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      background-color: #444;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #555;
+      color: white;
+      border: 1px solid #666;
+      cursor: pointer;
+      font-size: 20px;
+      height: 60px;
+      user-select: none;
+    }
+    .key:hover {
+      background-color: #666;
+    }
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    /* Blinking cursor */
+    @keyframes blink {
+      0% { border-right: 2px solid white; }
+      50% { border-right: 2px solid transparent; }
+      100% { border-right: 2px solid white; }
+    }
+    #outputField:focus {
+      outline: none;
+      border-right: 2px solid white;
+      animation: blink 1s step-start infinite;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <textarea id="outputField"></textarea>
+  <div id="keypad">
+    <div class="key" onclick="addToText('e')">e</div>
+    <div class="key" onclick="addToText('y')">y</div>
+    <div class="key" onclick="addToText('o')">o</div>
+    <div class="key" onclick="addToText('ε')">ε</div>
+
+    <div class="key" onclick="addToText('c')">c</div>
+    <div class="key" onclick="addToText('s')">s</div>
+    <div class="key" onclick="addToText('δ')">δ</div>
+    <div class="key" onclick="addToText('8')">8</div>
+
+    <div class="key" onclick="addToText('γ')">γ</div>
+    <div class="key" onclick="addToText('π')">π</div>
+    <div class="key" onclick="addToText('β')">β</div>
+    <div class="key" onclick="addToText('h')">h</div>
+
+    <div class="key" onclick="handleBackspace()">⌫</div>
+    <div class="key" onclick="addToText('-')">-</div>
+    <div class="key" onclick="addToText('.')">.</div>
+    <div class="key" onclick="handleSpace()">␣</div>
+  </div>
+  <button onclick="downloadText()">Download</button>
+</div>
+
+<script>
+  let lastKeyWasSpace = false;
+
+  function addToText(value) {
+    const outputField = document.getElementById('outputField');
+    outputField.value += value;
+    outputField.focus(); // Keep focus on textarea
+    lastKeyWasSpace = false; // Reset space flag
+  }
+
+  function handleBackspace() {
+    const outputField = document.getElementById('outputField');
+    outputField.value = outputField.value.slice(0, -1); // Remove the last character
+    outputField.focus(); // Keep focus on textarea
+    lastKeyWasSpace = false; // Reset space flag
+  }
+
+  function handleSpace() {
+    const outputField = document.getElementById('outputField');
+    if (lastKeyWasSpace) {
+      outputField.value += '\n'; // Add newline if space was already added
+      lastKeyWasSpace = false; // Reset space flag
+    } else {
+      outputField.value += ' '; // Add single space
+      lastKeyWasSpace = true; // Set space flag
+    }
+    outputField.focus(); // Keep focus on textarea
+  }
+
+  function downloadText() {
+    const outputField = document.getElementById('outputField');
+    const text = outputField.value;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'output.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>
