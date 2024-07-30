@@ -97,21 +97,21 @@
     <div class="key" onclick="handleBackspace()">⌫</div>
     <div class="key" onclick="addToText('-')">-</div>
     <div class="key" onclick="addToText('.')">.</div>
-    <div class="key" onmousedown="startSpace()" onmouseup="stopSpace()">␣</div>
+    <div class="key" onmousedown="startSpace()" onmouseup="stopSpace()" ontouchstart="startSpace()" ontouchend="stopSpace()">␣</div>
   </div>
   <button onclick="downloadText()">Download</button>
 </div>
 
 <script>
-  let spaceInterval;
-  let lastKeyWasSpace = false;
+  let spaceHeld = false;
+  let spaceTimeout;
 
   function addToText(value) {
     const outputField = document.getElementById('outputField');
     const currentText = outputField.value;
     outputField.value = currentText + value;
     outputField.focus(); // Keep focus on the input
-    lastKeyWasSpace = false; // Reset space flag
+    spaceHeld = false; // Reset space flag
   }
 
   function handleBackspace() {
@@ -119,30 +119,22 @@
     const currentText = outputField.value;
     outputField.value = currentText.slice(0, -1); // Remove the last character
     outputField.focus(); // Keep focus on the input
-    lastKeyWasSpace = false; // Reset space flag
-  }
-
-  function handleSpace() {
-    const outputField = document.getElementById('outputField');
-    const currentText = outputField.value;
-    if (lastKeyWasSpace) {
-      outputField.value = currentText + '\n'; // Add a new line if space was already added
-      lastKeyWasSpace = false; // Reset space flag
-    } else {
-      outputField.value = currentText + ' '; // Add a single space
-      lastKeyWasSpace = true; // Set space flag
-    }
-    outputField.focus(); // Keep focus on the input
+    spaceHeld = false; // Reset space flag
   }
 
   function startSpace() {
-    handleSpace();
-    spaceInterval = setInterval(handleSpace, 100); // Add a new line every 100ms while the key is held down
+    spaceHeld = true;
+    addToText(' '); // Add a single space initially
+    spaceTimeout = setTimeout(function() {
+      if (spaceHeld) {
+        addToText('\n'); // Add a new line if space is held
+      }
+    }, 300); // Delay before adding new line
   }
 
   function stopSpace() {
-    clearInterval(spaceInterval); // Stop adding new lines when the key is released
-    lastKeyWasSpace = false; // Reset space flag
+    clearTimeout(spaceTimeout);
+    spaceHeld = false; // Reset space flag
   }
 
   function downloadText() {
