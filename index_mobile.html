@@ -125,7 +125,7 @@
     const outputField = document.getElementById('outputField');
     const currentText = outputField.value;
     if (lastKeyWasSpace) {
-      outputField.value = currentText + '\n'; // Add a new line if space was already added
+      outputField.value = currentText.trimEnd() + '\n'; // Add a new line if space was already added
       lastKeyWasSpace = false; // Reset space flag
     } else {
       outputField.value = currentText + ' '; // Add a single space
